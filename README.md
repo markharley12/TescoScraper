@@ -17,11 +17,11 @@ This project scrapes product information from Tesco's groceries website for a sp
 ## Installation
 
 1. Clone this repository:
-   ```sh
-   git clone https://github.com/markharley12/TescoScraper.git
-   cd TescoScraper
-   ```
-Install the required Python packages:
+```sh
+git clone https://github.com/markharley12/TescoScraper.git
+cd TescoScraper
+```
+2. Install the required Python packages:
 
 ```sh
 pip install -r requirements.txt
@@ -29,7 +29,7 @@ pip install -r requirements.txt
 Ensure you have Google Chrome installed. Download and install ChromeDriver from here or use webdriver_manager to handle it automatically.
 
 ## Usage
-1. Run the scraper:
+Run the scraper:
 
 ```sh
 python tescoScraperMultiPage.py --food_type food-cupboard --start_page 1 --end_page 120 --output_dir json_database
@@ -38,10 +38,11 @@ The script will scrape product information from Tesco's groceries website for th
 Configuration
 You can configure the scraper using command-line arguments:
 
---food_type: (required) Specify the food category to scrape. Choices are: "fresh-food", "bakery", "frozen-food", "treats-and-snacks", "food-cupboard".
---start_page: (optional) Define the starting page number. Default is 1.
---end_page: (optional) Define the ending page number. Default is 120.
---output_dir: (optional) Specify the directory to save the JSON files. Default is json_database.
+- **--food_type**: (required) Specify the food category to scrape. Choices are: "fresh-food", "bakery", "frozen-food", "treats-and-snacks", "food-cupboard".
+- **--start_page**: (optional) Define the starting page number. Default is 1.
+- **--end_page**: (optional) Define the ending page number. Default is 120.
+- **--output_dir**: (optional) Specify the directory to save the JSON files. Default is json_database.
+
 For example, to scrape the "bakery" category from pages 5 to 10 and save to a custom directory:
 
 ```sh
@@ -62,5 +63,6 @@ TescoScraper/
 ## Notes
 Ensure that ChromeDriver is compatible with your version of Google Chrome.
 If running in a headless environment, uncomment the headless option in the Chrome options configuration.
+In my testing environment the scraper only worked in non headless mode.
 ## License
 This project is licensed under the MIT License.
