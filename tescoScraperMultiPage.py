@@ -9,6 +9,7 @@ import sys
 import json
 import time
 import os
+import argparse
 
 # Setup Chrome options (remove headless mode)
 chrome_options = Options()
@@ -20,7 +21,7 @@ chrome_options.add_argument("--disable-dev-shm-usage")
 webdriver_service = Service(ChromeDriverManager().install())
 
 # Choose Chrome Browser
-driver = webdriver.Chrome(service=webdriver_service, options=chrome_options)
+# driver = webdriver.Chrome(service=webdriver_service, options=chrome_options)
 
 def getFoodItems(url: str, driver) -> list:
     """
@@ -99,7 +100,7 @@ def writeFoodItems(food_items: list, filename: str = 'food_items.json') -> None:
     # The f-string is used to format the string with the filename as a placeholder
     print(f"Food items have been written to {filename}")
 
-def getFoodPage(foodType: str, pageNumber: int, driver, output_dir: str) -> None:
+def getFoodPage(foodType: str, pageNumber: int, driver, output_dir: str) -> bool : 
     """
     Scrapes the specified foodType from Tesco's groceries website for the given page number.
     Writes the extracted food items to a JSON file.
@@ -134,6 +135,10 @@ def getFoodPage(foodType: str, pageNumber: int, driver, output_dir: str) -> None
         # Example: fresh-food_1.json
         writeFoodItems(url_foods, filename)
 
+        if len(url_foods) == 0:
+            return True
+        return False
+
     except Exception as e:
         # Print the error and exit with a non-zero status
         print(f"An error occurred: {e}")
@@ -142,17 +147,30 @@ def getFoodPage(foodType: str, pageNumber: int, driver, output_dir: str) -> None
 
 # Main execution block
 if __name__ == "__main__":
-    output_dir = 'json_database'
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+    # TESCO_FOOD_TYPES = ["fresh-food", "bakery", "frozen-food", "treats-and-snacks", "food-cupboard"]
+    # APPROXIMATE_LENGTHS = [90, 20, 25, 40, 120]
+
+    # Setup argument parser
+    parser = argparse.ArgumentParser(description='Scrape food data from TESCO website.')
+    parser.add_argument('--output_dir', type=str, default='json_database', help='Directory to save the JSON files (default: json_database)')
+    parser.add_argument('--food_type', type=str, required=True, choices=["fresh-food", "bakery", "frozen-food", "treats-and-snacks", "food-cupboard"], help='Type of food to scrape (required)')
+    parser.add_argument('--start_page', type=int, default=1, help='Starting page number (default: 1)')
+    parser.add_argument('--end_page', type=int, default=120, help='Ending page number (default: 120)')
+
+
+    args = parser.parse_args()
+
+    # Create output directory if it doesn't exist
+    if not os.path.exists(args.output_dir):
+        os.makedirs(args.output_dir)
 
     try:
-        foodType = 'fresh-food'
-        pageNumbers = range(1,51)  # Example range of pages to scrape
-        for pageNumber in pageNumbers:
+        for pageNumber in range(args.start_page, args.end_page + 1):
             driver = webdriver.Chrome(service=webdriver_service, options=chrome_options)  # Reinitialize the driver
-            getFoodPage(foodType, pageNumber, driver, output_dir)
+            finalpage = getFoodPage(args.food_type, pageNumber, driver, args.output_dir)
             driver.close()
+            if finalpage:
+                break
             time.sleep(2)  # Add delay to ensure pages load properly
     finally:
         driver.quit()

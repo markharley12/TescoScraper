@@ -32,13 +32,21 @@ Ensure you have Google Chrome installed. Download and install ChromeDriver from 
 1. Run the scraper:
 
 ```sh
-python tescoScraperMultiPage.py
+python tescoScraperMultiPage.py --food_type food-cupboard --start_page 1 --end_page 120 --output_dir json_database
 ```
-2. The script will scrape product information from Tesco's groceries website for the specified category and pages, then save the data to JSON files in the json_database directory.
+The script will scrape product information from Tesco's groceries website for the specified category and pages, then save the data to JSON files in the specified output directory (default: json_database).
+Configuration
+You can configure the scraper using command-line arguments:
 
-## Configuration
-- *foodType*: Change the food category to scrape. Modify the foodType variable in the tescoScraperMultiPage.py script.
-- *pageNumbers*: Adjust the range of page numbers to scrape. Modify the pageNumbers variable in the tescoScraperMultiPage.py script.
+--food_type: (required) Specify the food category to scrape. Choices are: "fresh-food", "bakery", "frozen-food", "treats-and-snacks", "food-cupboard".
+--start_page: (optional) Define the starting page number. Default is 1.
+--end_page: (optional) Define the ending page number. Default is 120.
+--output_dir: (optional) Specify the directory to save the JSON files. Default is json_database.
+For example, to scrape the "bakery" category from pages 5 to 10 and save to a custom directory:
+
+```sh
+python tescoScraperMultiPage.py --food_type bakery --start_page 5 --end_page 10 --output_dir custom_directory
+```
 ## File Structure
 ```
 TescoScraper/
@@ -47,9 +55,10 @@ TescoScraper/
 ├── requirements.txt
 └── json_database/
 ```
-- scraper.py: Main script to run the scraper.
+- tescoScraperMultiPage.py: Main script to run the scraper.
 - requirements.txt: List of required Python packages.
-- json_database/: Directory where JSON files are saved.
+- json_database/: Directory where JSON files are saved (default).
+
 ## Notes
 Ensure that ChromeDriver is compatible with your version of Google Chrome.
 If running in a headless environment, uncomment the headless option in the Chrome options configuration.
